@@ -4,8 +4,8 @@
     <application>
         <service android:name=".ui.FloatingBubbleService" />
         <activity android:name=".ui.LogListActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/Theme.Reqr.Inspector" />
         <activity android:name=".ui.LogDetailActivity" 
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/Theme.Reqr.Inspector" />
     </application>
 </manifest>

@@ -5,5 +5,8 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.Reqr" parent="Base.Theme.Reqr" />
+    <style name="Theme.Reqr" parent="Base.Theme.Reqr">
+        <item name="android:fontFamily">@font/akatski_family</item>
+        <item name="fontFamily">@font/akatski_family</item>
+    </style>
 </resources>

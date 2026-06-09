@@ -3,5 +3,7 @@
     <style name="Base.Theme.Reqr" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="android:fontFamily">@font/akatski_family</item>
+        <item name="fontFamily">@font/akatski_family</item>
     </style>
 </resources>
