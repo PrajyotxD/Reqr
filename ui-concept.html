@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetInspect SDK – UI Design</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg:        #0D0F14;
+    --surface:   #141720;
+    --card:      #1C2030;
+    --border:    #252A3A;
+    --accent:    #00E5FF;
+    --accent2:   #7B61FF;
+    --success:   #00C896;
+    --warn:      #FFB830;
+    --danger:    #FF4D6A;
+    --text:      #E8EAF0;
+    --muted:     #6B7280;
+    --mono:      'JetBrains Mono', monospace;
+    --sans:      'Inter', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #07090D;
+    font-family: var(--sans);
+    color: var(--text);
+    padding: 40px 20px;
+    min-height: 100vh;
+  }
+
+  h1 {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+    color: #3A3F52;
+    text-align: center;
+    margin-bottom: 48px;
+    font-family: var(--mono);
+  }
+
+  /* ── SCREEN WRAPPER ── */
+  .screens {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .screen-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .screen-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── PHONE SHELL ── */
+  .phone {
+    width: 280px;
+    background: #0A0C10;
+    border-radius: 36px;
+    border: 2px solid #1E2230;
+    padding: 14px 10px;
+    box-shadow:
+      0 0 0 1px #0A0C10,
+      0 32px 64px rgba(0,0,0,0.7),
+      inset 0 1px 0 rgba(255,255,255,0.04);
+    position: relative;
+  }
+
+  .phone::before {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 6px;
+    background: #1A1E2A;
+    border-radius: 3px;
+    margin: 0 auto 12px;
+  }
+
+  .screen {
+    background: var(--bg);
+    border-radius: 24px;
+    overflow: hidden;
+    min-height: 520px;
+    position: relative;
+  }
+
+  /* ── STATUS BAR ── */
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px 6px;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--muted);
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .topbar-title {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+
+  .topbar-sub {
+    font-size: 9px;
+    color: var(--muted);
+    font-family: var(--mono);
+    margin-top: 1px;
+  }
+
+  .icon-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  .topbar-actions { display: flex; gap: 6px; }
+
+  /* ── FILTER TABS ── */
+  .filter-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 8px 14px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .filter-tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    background: transparent;
+  }
+
+  .tab.active {
+    background: rgba(0,229,255,0.1);
+    border-color: rgba(0,229,255,0.3);
+    color: var(--accent);
+  }
+
+  .tab.danger { border-color: rgba(255,77,106,0.3); color: var(--danger); }
+  .tab.warn   { border-color: rgba(255,184,48,0.3); color: var(--warn); }
+
+  /* ── LOG LIST ── */
+  .log-list { padding: 0 10px 10px; }
+
+  .log-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 11px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .log-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    border-radius: 10px 0 0 10px;
+  }
+
+  .log-item.ok::before    { background: var(--success); }
+  .log-item.redir::before { background: var(--warn); }
+  .log-item.err::before   { background: var(--danger); }
+
+  .log-row1 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  .method {
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .method.GET    { background: rgba(0,200,150,0.15); color: var(--success); }
+  .method.POST   { background: rgba(123,97,255,0.15); color: var(--accent2); }
+  .method.PUT    { background: rgba(255,184,48,0.15); color: var(--warn); }
+  .method.DELETE { background: rgba(255,77,106,0.15); color: var(--danger); }
+
+  .status-code {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .status-code.ok    { color: var(--success); }
+  .status-code.redir { color: var(--warn); }
+  .status-code.err   { color: var(--danger); }
+
+  .log-url {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 5px;
+  }
+
+  .log-url .host { color: var(--muted); }
+
+  .log-meta {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .meta-chip {
+    font-family: var(--mono);
+    font-size: 8px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--muted);
+    opacity: 0.4;
+  }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    display: flex;
+    gap: 0;
+    margin: 0 10px 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .stat {
+    flex: 1;
+    padding: 8px 6px;
+    text-align: center;
+    border-right: 1px solid var(--border);
+  }
+
+  .stat:last-child { border-right: none; }
+
+  .stat-val {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    display: block;
+  }
+
+  .stat-lbl {
+    font-size: 8px;
+    color: var(--muted);
+    font-family: var(--mono);
+    display: block;
+    margin-top: 1px;
+  }
+
+  /* ── DETAIL SCREEN ── */
+  .detail-section {
+    margin: 0 10px 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .detail-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 11px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+  }
+
+  .detail-section-title {
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .copy-btn {
+    font-family: var(--mono);
+    font-size: 8px;
+    color: var(--accent);
+    background: rgba(0,229,255,0.08);
+    border: 1px solid rgba(0,229,255,0.2);
+    border-radius: 4px;
+    padding: 2px 6px;
+  }
+
+  .kv-row {
+    display: flex;
+    padding: 6px 11px;
+    border-bottom: 1px solid rgba(37,42,58,0.6);
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .kv-row:last-child { border-bottom: none; }
+
+  .kv-key {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--accent2);
+    min-width: 80px;
+    flex-shrink: 0;
+  }
+
+  .kv-val {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text);
+    word-break: break-all;
+  }
+
+  .kv-val.muted { color: var(--muted); }
+
+  /* URL hero in detail */
+  .url-hero {
+    margin: 8px 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 11px;
+  }
+
+  .url-hero-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 5px;
+  }
+
+  .url-full {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text);
+    line-height: 1.5;
+    word-break: break-all;
+  }
+
+  .url-full .scheme { color: var(--muted); }
+  .url-full .host   { color: var(--accent); }
+  .url-full .path   { color: var(--text); }
+  .url-full .query  { color: var(--accent2); }
+
+  .timing-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .timing-chip {
+    font-family: var(--mono);
+    font-size: 8px;
+    padding: 3px 7px;
+    border-radius: 5px;
+    background: rgba(0,200,150,0.1);
+    color: var(--success);
+    border: 1px solid rgba(0,200,150,0.2);
+  }
+
+  .timing-chip.warn {
+    background: rgba(255,184,48,0.1);
+    color: var(--warn);
+    border-color: rgba(255,184,48,0.2);
+  }
+
+  /* body preview */
+  .body-preview {
+    padding: 8px 11px;
+    font-family: var(--mono);
+    font-size: 8px;
+    line-height: 1.7;
+    color: #8B9BB4;
+  }
+
+  .json-key   { color: var(--accent2); }
+  .json-str   { color: var(--success); }
+  .json-num   { color: var(--warn); }
+  .json-bool  { color: var(--danger); }
+
+  /* ── BUBBLE SCREEN ── */
+  .bubble-screen {
+    position: relative;
+    min-height: 520px;
+    background: linear-gradient(160deg, #0D0F14 0%, #141020 100%);
+  }
+
+  .app-mock {
+    padding: 16px;
+  }
+
+  .app-mock-topbar {
+    height: 36px;
+    background: var(--card);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    gap: 6px;
+  }
+
+  .mock-circle {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+
+  .mock-line {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--border);
+  }
+
+  .mock-card {
+    height: 60px;
+    background: var(--card);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    border: 1px solid var(--border);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    justify-content: center;
+  }
+
+  /* bubble */
+  .bubble {
+    position: absolute;
+    bottom: 60px;
+    right: 16px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+      0 0 0 3px rgba(0,229,255,0.15),
+      0 8px 24px rgba(0,229,255,0.3);
+    cursor: pointer;
+    z-index: 10;
+  }
+
+  .bubble-icon {
+    font-size: 20px;
+  }
+
+  .bubble-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 16px;
+    height: 16px;
+    background: var(--danger);
+    border-radius: 50%;
+    font-family: var(--mono);
+    font-size: 8px;
+    font-weight: 700;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid var(--bg);
+  }
+
+  .bubble-tooltip {
+    position: absolute;
+    bottom: 115px;
+    right: 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 10px;
+    width: 130px;
+  }
+
+  .tooltip-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  .tooltip-row:last-child { margin-bottom: 0; }
+
+  .tooltip-label {
+    font-family: var(--mono);
+    font-size: 8px;
+    color: var(--muted);
+  }
+
+  .tooltip-val {
+    font-family: var(--mono);
+    font-size: 8px;
+    font-weight: 600;
+  }
+
+  /* arrow */
+  .bubble-tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    right: 20px;
+    width: 8px; height: 8px;
+    background: var(--card);
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    transform: rotate(45deg);
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 48px;
+    padding: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    max-width: 860px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .legend-title {
+    width: 100%;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  .legend-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+
+<h1>NetInspect SDK</h1>
+<p class="subtitle">Android UI Design · Java · 3 Screens</p>
+
+<div class="screens">
+
+  <!-- ══ SCREEN 1: LOG LIST ══ -->
+  <div class="screen-wrap">
+    <div class="phone">
+      <div class="screen">
+        <div class="status-bar">
+          <span>9:41</span>
+          <span>▲▼ ▌▌▌ 🔋</span>
+        </div>
+        <div class="topbar">
+          <div>
+            <div class="topbar-title">NetInspect</div>
+            <div class="topbar-sub">12 requests · session</div>
+          </div>
+          <div class="topbar-actions">
+            <div class="icon-btn">⟳</div>
+            <div class="icon-btn">🗑</div>
+          </div>
+        </div>
+
+        <!-- stats bar -->
+        <div class="stats-bar">
+          <div class="stat">
+            <span class="stat-val" style="color:var(--success)">9</span>
+            <span class="stat-lbl">2xx OK</span>
+          </div>
+          <div class="stat">
+            <span class="stat-val" style="color:var(--warn)">2</span>
+            <span class="stat-lbl">3xx</span>
+          </div>
+          <div class="stat">
+            <span class="stat-val" style="color:var(--danger)">1</span>
+            <span class="stat-lbl">Errors</span>
+          </div>
+          <div class="stat">
+            <span class="stat-val" style="color:var(--accent)">234</span>
+            <span class="stat-lbl">Avg ms</span>
+          </div>
+        </div>
+
+        <!-- filter tabs -->
+        <div class="filter-tabs">
+          <div class="tab active">All</div>
+          <div class="tab">GET</div>
+          <div class="tab">POST</div>
+          <div class="tab danger">Errors</div>
+          <div class="tab warn">Slow</div>
+        </div>
+
+        <!-- list -->
+        <div class="log-list">
+
+          <div class="log-item err">
+            <div class="log-row1">
+              <span class="method POST">POST</span>
+              <span class="status-code err">500</span>
+            </div>
+            <div class="log-url"><span class="host">api.myapp.com</span>/auth/login</div>
+            <div class="log-meta">
+              <span class="meta-chip">⏱ 1204ms</span>
+              <div class="dot"></div>
+              <span class="meta-chip">↑ 0.4KB</span>
+              <div class="dot"></div>
+              <span class="meta-chip">↓ 0.1KB</span>
+            </div>
+          </div>
+
+          <div class="log-item ok">
+            <div class="log-row1">
+              <span class="method GET">GET</span>
+              <span class="status-code ok">200</span>
+            </div>
+            <div class="log-url"><span class="host">api.myapp.com</span>/users/profile</div>
+            <div class="log-meta">
+              <span class="meta-chip">⏱ 187ms</span>
+              <div class="dot"></div>
+              <span class="meta-chip">↓ 2.1KB</span>
+            </div>
+          </div>
+
+          <div class="log-item ok">
+            <div class="log-row1">
+              <span class="method POST">POST</span>
+              <span class="status-code ok">201</span>
+            </div>
+            <div class="log-url"><span class="host">api.myapp.com</span>/tasks/create</div>
+            <div class="log-meta">
+              <span class="meta-chip">⏱ 312ms</span>
+              <div class="dot"></div>
+              <span class="meta-chip">↑ 1.2KB  ↓ 0.8KB</span>
+            </div>
+          </div>
+
+          <div class="log-item redir">
+            <div class="log-row1">
+              <span class="method GET">GET</span>
+              <span class="status-code redir">301</span>
+            </div>
+            <div class="log-url"><span class="host">myapp.com</span>/api/v1/data</div>
+            <div class="log-meta">
+              <span class="meta-chip">⏱ 98ms</span>
+              <div class="dot"></div>
+              <span class="meta-chip">Redirect</span>
+            </div>
+          </div>
+
+          <div class="log-item ok">
+            <div class="log-row1">
+              <span class="method PUT">PUT</span>
+              <span class="status-code ok">200</span>
+            </div>
+            <div class="log-url"><span class="host">api.myapp.com</span>/users/settings</div>
+            <div class="log-meta">
+              <span class="meta-chip">⏱ 223ms</span>
+              <div class="dot"></div>
+              <span class="meta-chip">↑ 0.6KB</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <span class="screen-label">Log List</span>
+  </div>
+
+  <!-- ══ SCREEN 2: DETAIL ══ -->
+  <div class="screen-wrap">
+    <div class="phone">
+      <div class="screen">
+        <div class="status-bar">
+          <span>9:41</span>
+          <span>▲▼ ▌▌▌ 🔋</span>
+        </div>
+        <div class="topbar">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="icon-btn" style="font-size:14px">←</div>
+            <div>
+              <div class="topbar-title" style="font-size:11px">Request Detail</div>
+              <div class="topbar-sub">POST · 500 Internal Error</div>
+            </div>
+          </div>
+          <div class="icon-btn">↑↓</div>
+        </div>
+
+        <div style="overflow-y:auto;max-height:470px;padding-bottom:10px;">
+
+          <!-- URL hero -->
+          <div class="url-hero">
+            <div class="url-hero-row">
+              <span class="method POST">POST</span>
+              <span class="status-code err" style="font-size:13px">500</span>
+            </div>
+            <div class="url-full">
+              <span class="scheme">https://</span><span class="host">api.myapp.com</span><span class="path">/auth/login</span>
+            </div>
+            <div class="timing-row">
+              <span class="timing-chip warn">⏱ 1204ms</span>
+              <span class="timing-chip" style="background:rgba(123,97,255,0.1);color:var(--accent2);border-color:rgba(123,97,255,0.2)">📅 09:38:42</span>
+            </div>
+          </div>
+
+          <!-- Request Headers -->
+          <div class="detail-section">
+            <div class="detail-section-header">
+              <span class="detail-section-title">Request Headers</span>
+              <span class="copy-btn">Copy</span>
+            </div>
+            <div class="kv-row">
+              <span class="kv-key">Content-Type</span>
+              <span class="kv-val">application/json</span>
+            </div>
+            <div class="kv-row">
+              <span class="kv-key">Authorization</span>
+              <span class="kv-val muted">Bearer ••••••••</span>
+            </div>
+            <div class="kv-row">
+              <span class="kv-key">User-Agent</span>
+              <span class="kv-val muted">okhttp/4.11.0</span>
+            </div>
+          </div>
+
+          <!-- Request Body -->
+          <div class="detail-section">
+            <div class="detail-section-header">
+              <span class="detail-section-title">Request Body</span>
+              <span class="copy-btn">Copy</span>
+            </div>
+            <div class="body-preview">
+              {<br>
+              &nbsp;&nbsp;<span class="json-key">"email"</span>: <span class="json-str">"user@mail.com"</span>,<br>
+              &nbsp;&nbsp;<span class="json-key">"password"</span>: <span class="json-str">"••••••••"</span>,<br>
+              &nbsp;&nbsp;<span class="json-key">"remember"</span>: <span class="json-bool">true</span><br>
+              }
+            </div>
+          </div>
+
+          <!-- Response Body -->
+          <div class="detail-section">
+            <div class="detail-section-header">
+              <span class="detail-section-title">Response Body</span>
+              <span class="copy-btn">Copy</span>
+            </div>
+            <div class="body-preview">
+              {<br>
+              &nbsp;&nbsp;<span class="json-key">"error"</span>: <span class="json-str">"Internal Server Error"</span>,<br>
+              &nbsp;&nbsp;<span class="json-key">"code"</span>: <span class="json-num">500</span>,<br>
+              &nbsp;&nbsp;<span class="json-key">"message"</span>: <span class="json-str">"DB connection failed"</span><br>
+              }
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <span class="screen-label">Request Detail</span>
+  </div>
+
+  <!-- ══ SCREEN 3: FLOATING BUBBLE ══ -->
+  <div class="screen-wrap">
+    <div class="phone">
+      <div class="screen">
+        <div class="status-bar">
+          <span>9:41</span>
+          <span>▲▼ ▌▌▌ 🔋</span>
+        </div>
+
+        <!-- mock app content -->
+        <div class="bubble-screen">
+          <div class="app-mock">
+            <div class="app-mock-topbar">
+              <div class="mock-circle"></div>
+              <div class="mock-line" style="width:80px"></div>
+              <div style="flex:1"></div>
+              <div class="mock-circle"></div>
+            </div>
+            <div class="mock-card">
+              <div class="mock-line" style="width:60%"></div>
+              <div class="mock-line" style="width:40%"></div>
+            </div>
+            <div class="mock-card">
+              <div class="mock-line" style="width:80%"></div>
+              <div class="mock-line" style="width:50%"></div>
+            </div>
+            <div class="mock-card">
+              <div class="mock-line" style="width:45%"></div>
+              <div class="mock-line" style="width:70%"></div>
+            </div>
+            <div class="mock-card">
+              <div class="mock-line" style="width:55%"></div>
+              <div class="mock-line" style="width:35%"></div>
+            </div>
+          </div>
+
+          <!-- tooltip popup -->
+          <div class="bubble-tooltip">
+            <div class="tooltip-row">
+              <span class="tooltip-label">Total</span>
+              <span class="tooltip-val" style="color:var(--accent)">12 calls</span>
+            </div>
+            <div class="tooltip-row">
+              <span class="tooltip-label">Errors</span>
+              <span class="tooltip-val" style="color:var(--danger)">1 failed</span>
+            </div>
+            <div class="tooltip-row">
+              <span class="tooltip-label">Avg speed</span>
+              <span class="tooltip-val" style="color:var(--success)">234ms</span>
+            </div>
+          </div>
+
+          <!-- floating bubble -->
+          <div class="bubble">
+            <span class="bubble-icon">🔬</span>
+            <div class="bubble-badge">1</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <span class="screen-label">Floating Bubble</span>
+  </div>
+
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="legend-title">Color System</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#00E5FF"></div>Accent / Brand</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#7B61FF"></div>Secondary / Keys</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#00C896"></div>Success / 2xx</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#FFB830"></div>Warning / 3xx / Slow</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#FF4D6A"></div>Error / 4xx 5xx</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#141720"></div>Surface</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#1C2030"></div>Card</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#252A3A"></div>Border</div>
+</div>
+
+</body>
+</html>

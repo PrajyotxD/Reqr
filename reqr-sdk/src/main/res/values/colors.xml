@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="dark_bg">#0D0F14</color>
+    <color name="surface">#141720</color>
+    <color name="card">#1C2030</color>
+    <color name="border">#252A3A</color>
+    <color name="accent_cyan">#00E5FF</color>
+    <color name="secondary_purple">#7B61FF</color>
+    <color name="success">#00C896</color>
+    <color name="warn">#FFB830</color>
+    <color name="danger">#FF4D6A</color>
+    <color name="text_main">#E8EAF0</color>
+    <color name="text_muted">#6B7280</color>
+</resources>

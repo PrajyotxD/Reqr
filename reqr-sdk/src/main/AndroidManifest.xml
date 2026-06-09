@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <application>
+        <service android:name=".ui.FloatingBubbleService" />
+        <activity android:name=".ui.LogListActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity android:name=".ui.LogDetailActivity" 
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+    </application>
+</manifest>
